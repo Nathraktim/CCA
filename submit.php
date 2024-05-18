@@ -1,4 +1,6 @@
 <?php
+require('libs/fpdf/fpdf.php'); // Include the FPDF library
+
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the submitted form data
@@ -70,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $imageFileName = uniqid() . '_' . basename($imageFile['name']);
 
     // Specify the upload directory
-    $uploadDir = 'data\images';
+    $uploadDir = 'data/images';
 
     // Move the uploaded file to the upload directory
     $targetPath = $uploadDir . '/' . $imageFileName;
@@ -78,6 +80,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Failed to upload image. Please try again.";
         exit;
     }
+
+    // Create a PDF from the form data
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'B', 16);
+    $pdf->Cell(0, 10, 'Admission Form', 0, 1, 'C');
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(0, 10, "Full Name: $fullName", 0, 1);
+    $pdf->Cell(0, 10, "Date of Birth: $dateOfBirth", 0, 1);
+    $pdf->Cell(0, 10, "Gender: $gender", 0, 1);
+    $pdf->Cell(0, 10, "Father's Name: $fatherName", 0, 1);
+    $pdf->Cell(0, 10, "Mother's Name: $motherName", 0, 1);
+    $pdf->Cell(0, 10, "Guardian's Name: $guardianName", 0, 1);
+    $pdf->Cell(0, 10, "Highest Qualification: $highestQualification", 0, 1);
+    $pdf->Cell(0, 10, "Institution Name: $institutionName", 0, 1);
+    $pdf->Cell(0, 10, "Year of Passing: $yearOfPassing", 0, 1);
+    $pdf->Cell(0, 10, "Contact Number: $contactNumber", 0, 1);
+    $pdf->Cell(0, 10, "Email: $email", 0, 1);
+    $pdf->Cell(0, 10, "Address: $address", 0, 1);
+    $pdf->Cell(0, 10, "Course Selection: $courseSelection", 0, 1);
+    $pdf->Cell(0, 10, "Batch Timing: $batchTiming", 0, 1);
+    $pdf->Cell(0, 10, "Course Duration: $courseDuration", 0, 1);
+    $pdf->Cell(0, 10, "Heard About Us From: $hearAbout", 0, 1);
+    if (!empty($otherOptionText)) {
+        $pdf->Cell(0, 10, "Other Option Text: $otherOptionText", 0, 1);
+    }
+    $pdfFileName = uniqid() . '_form.pdf';
+    $pdfFilePath = 'data/pdf/' . $pdfFileName;
+    $pdf->Output('F', $pdfFilePath);
 
     // Connect to the database
     $dbHost = 'localhost';
@@ -92,8 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insert data into the database
-    $sql = "INSERT INTO admissions (full_name, dob, gender, father_name, mother_name, guardian_name, highest_qualification, institution_name, year_of_passing, contact_number, email, address, course_selection, batch_timing, course_duration, hear_about, other_option_text, photo)
-            VALUES ('$fullName', '$dateOfBirth', '$gender', '$fatherName', '$motherName', '$guardianName', '$highestQualification', '$institutionName', '$yearOfPassing', '$contactNumber', '$email', '$address', '$courseSelection', '$batchTiming', '$courseDuration', '$hearAbout', '$otherOptionText', '$imageFileName')";
+    $sql = "INSERT INTO admissions (full_name, dob, gender, father_name, mother_name, guardian_name, highest_qualification, institution_name, year_of_passing, contact_number, email, address, course_selection, batch_timing, course_duration, hear_about, other_option_text, photo, pdf_link)
+            VALUES ('$fullName', '$dateOfBirth', '$gender', '$fatherName', '$motherName', '$guardianName', '$highestQualification', '$institutionName', '$yearOfPassing', '$contactNumber', '$email', '$address', '$courseSelection', '$batchTiming', '$courseDuration', '$hearAbout', '$otherOptionText', '$imageFileName', '$pdfFileName')";
 
     $result = mysqli_query($conn, $sql);
 
@@ -109,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <link rel="icon" type="image/x-icon" href="./logo.svg">
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
             <style>
                 body {
                     font-family: poppins;
@@ -157,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // JavaScript function to download the form
         echo '<script>
             function downloadForm() {
-                const formLink = "downloadable_form.pdf"; // Replace with the actual form file URL
+                const formLink = "' . $pdfFilePath . '";
                 window.open(formLink, "_blank");
             }
         </script>';
@@ -169,3 +200,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo "Form submission failed. Please try again.";
 }
+?>
