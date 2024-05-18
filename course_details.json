@@ -1,0 +1,47 @@
+{
+    "acting": {
+      "12 Months": 7000
+    },
+    "dance": {
+      "12 Months": 7000
+    },
+    "yoga-therapy": {
+      "12 Months": 7000
+    },
+    "gfx-designing": {
+      "Basic 5 Months": 5000,
+      "Advance 9 Months": 8000
+    },
+    "video-editing": {
+      "Basic 5 Months": 5000,
+      "Advacne 9 Months": 8000
+    },
+    "digital-marketing": {
+      "Advance 6 Months": 6000
+    },
+    "vfx-compostiting": {
+      "12 Months": 13500
+    },
+    "adre":{
+      "12 Months":""
+    },
+    "assam-police":{
+      "12 Months":""
+    }
+    ,
+    "assam-tet":{
+      "12 Months":""
+    },
+    "cuet-dhs":{
+      "12 Months":""
+    },
+    "bed-deled":{
+      "12 Months":""
+    },
+    "maths":{
+      "12 Months":""
+    },
+    "acc":{
+      "12 Months":""
+    }
+  }
